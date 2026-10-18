@@ -19,10 +19,13 @@ export default defineConfig({
     // "The service was stopped" minification failure under memory limits).
     rollupOptions: {
       output: {
-        manualChunks: {
-          recharts: ['recharts'],
-          react: ['react', 'react-dom'],
-          icons: ['lucide-react'],
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          if (id.includes('recharts')) return 'recharts';
+          if (id.includes('/d3-') || id.includes('victory-vendor')) return 'd3';
+          if (id.includes('es-toolkit')) return 'es-toolkit';
+          if (id.includes('react-dom') || id.includes('/react/')) return 'react';
+          if (id.includes('lucide-react')) return 'icons';
         },
       },
     },
